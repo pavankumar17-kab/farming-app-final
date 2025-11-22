@@ -2,102 +2,101 @@ import streamlit as st
 import google.generativeai as genai
 from PIL import Image
 
-# --- 1. SETUP: MOBILE FRIENDLY CONFIG ---
+# --- 1. CONFIGURATION ---
 st.set_page_config(page_title="Agri-Smart AI", page_icon="🌿", layout="centered")
 
-# Connect to the Google AI Brain (Gemini)
+# Connect to Google AI
 if "GOOGLE_API_KEY" in st.secrets:
     genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
 else:
-    st.error("⚠ Google API Key missing! Please add it to Streamlit Secrets.")
+    st.error("⚠ Missing API Key! Add it to Streamlit Secrets.")
 
-# --- 2. SIDEBAR MENU (The Old Options Restored) ---
-st.sidebar.title("🚜 Agri-Dashboard")
-st.sidebar.markdown("---")
-app_mode = st.sidebar.radio("Select Tool:", [
-    "🌿 Plant Disease Doctor",
-    "🌰 Smart Seed Checker",
-    "🌤 Weather Detector"
+# --- 2. MAIN MENU (Radio Buttons on Screen) ---
+st.write("### Select Option")
+app_mode = st.radio(" ", [
+    "💬 Agriculture Chatbot",
+    "🟢 Plant Disease Detector", 
+    "🌾 Seed Quality Checker", 
+    "☁ Weather Predictor"
 ])
+st.markdown("---")
 
-# --- OPTION 1: PLANT DISEASE DOCTOR (Heavy AI) ---
-if app_mode == "🌿 Plant Disease Doctor":
-    st.title("🌿 Plant Disease Doctor")
-    st.markdown("Upload a leaf photo. The AI will diagnose diseases and suggest medicines.")
-
-    uploaded_file = st.file_uploader("Upload Leaf Photo", type=["jpg", "jpeg", "png"])
-
-    if uploaded_file:
-        image = Image.open(uploaded_file)
-        st.image(image, caption="Uploaded Leaf", use_column_width=True)
-        
-        if st.button("Diagnose Disease"):
-            with st.spinner("Consulting the AI Expert..."):
+# --- OPTION 1: GENERAL AGRICULTURE CHATBOT ---
+if app_mode == "💬 Agriculture Chatbot":
+    st.header("💬 Ask anything about agriculture")
+    
+    # Text Input for General Questions
+    user_question = st.text_input("Your Question:", placeholder="e.g., How much water for cotton? Best fertilizer for wheat?")
+    
+    if st.button("Ask Agri-AI"):
+        if user_question:
+            with st.spinner("Thinking..."):
                 try:
                     model = genai.GenerativeModel('gemini-1.5-flash')
-                    prompt = (
-                        "You are an expert agricultural botanist. Analyze this image of a plant leaf. "
-                        "1. Identify the plant name. "
-                        "2. detailed analysis of the disease (or confirm if healthy). "
-                        "3. Suggest specific chemical or organic fertilizers/medicines to cure it. "
-                        "4. Provide prevention tips."
-                    )
-                    response = model.generate_content([prompt, image])
-                    st.success("Diagnosis Complete!")
+                    # General Agriculture Prompt
+                    prompt = f"You are an expert agriculture consultant. Answer this question for a farmer in simple English: {user_question}"
+                    response = model.generate_content(prompt)
+                    st.success("Agri-GPT Answer:")
                     st.write(response.text)
                 except Exception as e:
                     st.error(f"Error: {e}")
 
-# --- OPTION 2: SEED CHECKER (Upgraded to AI) ---
-elif app_mode == "🌰 Smart Seed Checker":
-    st.title("🌰 Smart Seed Checker")
-    st.markdown("Upload a photo of your seeds. The AI will check quality and breakage.")
+# --- OPTION 2: PLANT DISEASE DETECTOR ---
+elif app_mode == "🟢 Plant Disease Detector":
+    st.header("🟢 Plant Disease Detector")
+    st.write("Upload a photo of a sick leaf.")
+    
+    uploaded_file = st.file_uploader("Choose a leaf image...", type=["jpg", "png", "jpeg"])
+    
+    if uploaded_file:
+        image = Image.open(uploaded_file)
+        st.image(image, caption="Uploaded Leaf", use_column_width=True)
+        
+        if st.button("Identify Disease"):
+            with st.spinner("Analyzing..."):
+                try:
+                    model = genai.GenerativeModel('gemini-1.5-flash')
+                    prompt = "Analyze this plant leaf. Name the plant. Identify disease. Suggest cure."
+                    response = model.generate_content([prompt, image])
+                    st.write(response.text)
+                except Exception as e:
+                    st.error(f"Error: {e}")
 
-    uploaded_seed = st.file_uploader("Upload Seed Photo", type=["jpg", "jpeg", "png"])
+# --- OPTION 3: SEED QUALITY CHECKER ---
+elif app_mode == "🌾 Seed Quality Checker":
+    st.header("🌾 Seed Quality Checker")
+    st.write("Upload a photo of seeds.")
+    
+    uploaded_seed = st.file_uploader("Choose seed image...", type=["jpg", "png"])
     
     if uploaded_seed:
         image = Image.open(uploaded_seed)
         st.image(image, caption="Uploaded Seeds", use_column_width=True)
         
         if st.button("Check Quality"):
-            with st.spinner("Analyzing seeds..."):
+            with st.spinner("Counting..."):
                 try:
                     model = genai.GenerativeModel('gemini-1.5-flash')
-                    # This replaces your old "Yellow Pixel" math with real intelligence
-                    prompt = (
-                        "Analyze this image of seeds. "
-                        "1. Estimate the approximate count. "
-                        "2. Detect if there are broken, discolored, or shriveled seeds. "
-                        "3. Rate the overall quality (High/Medium/Low) for farming."
-                    )
+                    prompt = "Count these seeds. Check for breakage/rot. Rate quality."
                     response = model.generate_content([prompt, image])
-                    st.info("Seed Quality Report:")
                     st.write(response.text)
                 except Exception as e:
                     st.error(f"Error: {e}")
 
-# --- OPTION 3: WEATHER DETECTOR (Restored) ---
-elif app_mode == "🌤 Weather Detector":
-    st.title("🌤 Weather Detector & Guide")
-    st.write("Select your current conditions to get farming advice.")
-
-    # This mimics your old manual detector since phones can't sense weather directly
+# --- OPTION 4: WEATHER PREDICTOR ---
+elif app_mode == "☁ Weather Predictor":
+    st.header("☁ Weather Predictor")
+    
     col1, col2 = st.columns(2)
     with col1:
-        season = st.selectbox("Current Season:", ["Summer", "Monsoon (Rainy)", "Winter", "Spring"])
+        season = st.selectbox("Season", ["Summer", "Monsoon", "Winter"])
     with col2:
-        sky = st.selectbox("Sky Condition:", ["Sunny/Clear", "Cloudy", "Rainy/Stormy"])
-
-    st.markdown("### 📢 Farming Advice:")
-    
-    # Logic for advice
-    if sky == "Rainy/Stormy":
-        st.warning("⛈ *Storm Alert:* Stop spraying pesticides immediately (they will wash off). Ensure field drainage is clear to prevent waterlogging.")
-    elif season == "Summer" and sky == "Sunny/Clear":
-        st.error("☀ *Heat Alert:* High evaporation rate. Irrigate crops early morning or late evening.")
-    elif season == "Monsoon (Rainy)":
-        st.info("🌧 *Fungal Risk:* High humidity promotes fungus. Monitor leaves closely for spots.")
-    elif season == "Winter":
-        st.success("❄ *Frost Watch:* Protect young seedlings from cold winds.")
-    else:
-        st.success("✅ Conditions are good for standard farming activities.")
+        sky = st.selectbox("Sky", ["Sunny", "Cloudy", "Rainy"])
+        
+    if st.button("Get Forecast"):
+        if sky == "Rainy":
+            st.warning("⚠ Heavy Rain Alert. Stop watering.")
+        elif sky == "Sunny" and season == "Summer":
+            st.error("☀ High Heat. Water frequently.")
+        else:
+            st.success("✅ Weather is good for farming.")
