@@ -11,88 +11,103 @@ if "GOOGLE_API_KEY" in st.secrets:
 else:
     st.error("⚠ Google API Key missing! Please add it to Streamlit Secrets.")
 
-# --- 2. MAIN MENU (VISIBLE ON FRONT PAGE) ---
+# --- 2. MAIN MENU (FOUR SEPARATE TOOLS) ---
 st.header("🚜 Agri-Dashboard")
 app_mode = st.radio("Select Tool:", [
-    "🌿 AI Plant Doctor (Chat)", 
-    "🌰 Smart Seed Checker", 
-    "🌤 Weather Guide"
+    "💬 Agri Chatbot (Text Only)",  # 1. New pure text option
+    "🟢 Plant Disease Detector", 
+    "🌾 Seed Quality Checker", 
+    "☁ Weather Guide"
 ], horizontal=True)
 st.markdown("---")
 
-
-# --- TOOL 1: PLANT DOCTOR (Chatbot Style) ---
-if app_mode == "🌿 AI Plant Doctor (Chat)":
-    st.title("🌿 AI Plant Doctor")
+# =======================================================
+# --- TOOL 1: GENERAL AGRICULTURE CHATBOT (TEXT ONLY) ---
+# =======================================================
+if app_mode == "💬 Agri Chatbot (Text Only)":
+    st.title("💬 General Agri Chatbot")
+    st.write("Ask any text-based question about farming, crops, or general agriculture.")
     
-    with st.chat_message("assistant"):
-        st.write("Hello! Upload a photo below and ask me any question about the plant.")
-
-    # Get image input (Upload is LARGE, Camera is small)
-    col1, col2 = st.columns((3, 1)) # 3/4 width for file uploader, 1/4 for camera
-    with col1:
-        # Full width, large button
-        uploaded_file = st.file_uploader("1. Upload Leaf Photo:", type=["jpg", "jpeg", "png"]) 
-    with col2:
-        # Narrow column makes this button small
-        camera_image = st.camera_input("Camera", label_visibility="collapsed") 
-
-    input_image = uploaded_file or camera_image # Logic to use either source
-
-    if input_image:
-        image = Image.open(input_image)
-        st.image(image, caption="Your Photo", use_column_width=True)
-        
-        user_question = st.chat_input("Ask a question about this plant...")
-        
+    # Text Input for General Questions (like the cotton example)
+    user_question = st.text_input("Your Question:", placeholder="e.g., hat amount of water I can use for growing cotton?")
+    
+    if st.button("Ask Agri-AI"):
         if user_question:
-            with st.chat_message("user"):
-                st.write(user_question)
-            
-            with st.chat_message("assistant"):
-                with st.spinner("Thinking..."):
-                    try:
-                        model = genai.GenerativeModel('gemini-1.5-flash')
-                        response = model.generate_content([user_question, image])
-                        st.write(response.text)
-                    except Exception as e:
-                        st.error(f"Error: {e}")
+            with st.spinner("Thinking..."):
+                try:
+                    model = genai.GenerativeModel('gemini-1.5-flash')
+                    # General text analysis prompt
+                    prompt = f"You are an expert agriculture consultant. Answer this question for a farmer in simple English: {user_question}"
+                    response = model.generate_content(prompt)
+                    st.success("Agri-GPT Answer:")
+                    st.write(response.text)
+                except Exception as e:
+                    st.error(f"Error: {e}")
 
+# =======================================================
+# --- TOOL 2: PLANT DISEASE DETECTOR (IMAGE ONLY) ---
+# =======================================================
+elif app_mode == "🟢 Plant Disease Detector":
+    st.header("🟢 Plant Disease Detector")
+    st.write("Upload a photo of a sick leaf for diagnosis.")
 
-# --- TOOL 2: SEED CHECKER ---
-elif app_mode == "🌰 Smart Seed Checker":
-    st.title("🌰 Smart Seed Checker")
-    
-    # Get image input (Upload is LARGE, Camera is small)
-    col1, col2 = st.columns((3, 1)) # 3/4 width for file uploader, 1/4 for camera
+    # Get image input (This area is for the image)
+    col1, col2 = st.columns((3, 1))
     with col1:
-        # Full width, large button
-        uploaded_file = st.file_uploader("1. Upload Seed Photo:", type=["jpg", "jpeg", "png"]) 
+        uploaded_file = st.file_uploader("1. Upload Leaf Photo:", type=["jpg", "jpeg", "png"])
     with col2:
-        # Narrow column makes this button small
-        camera_image = st.camera_input("Camera", label_visibility="collapsed") 
-
+        camera_image = st.camera_input("Camera", label_visibility="collapsed")
+        
     input_image = uploaded_file or camera_image
 
     if input_image:
         image = Image.open(input_image)
-        st.image(image, caption="Your Seeds", use_column_width=True)
+        st.image(image, caption="Uploaded Leaf", use_column_width=True)
+        
+        if st.button("Identify Disease"):
+            with st.spinner("Analyzing..."):
+                try:
+                    model = genai.GenerativeModel('gemini-1.5-flash')
+                    prompt = "Analyze this plant leaf. Name the plant, identify the disease, and suggest a cure."
+                    response = model.generate_content([prompt, image])
+                    st.write(response.text)
+                except Exception as e:
+                    st.error(f"Error: {e}")
+
+# =======================================================
+# --- TOOL 3: SEED QUALITY CHECKER (IMAGE ONLY) ---
+# =======================================================
+elif app_mode == "🌾 Seed Quality Checker":
+    st.header("🌾 Seed Quality Checker")
+    st.write("Upload a photo of seeds to check quality and count.")
+    
+    col1, col2 = st.columns((3, 1))
+    with col1:
+        uploaded_file = st.file_uploader("1. Upload Seed Photo:", type=["jpg", "jpeg", "png"])
+    with col2:
+        camera_image = st.camera_input("Camera", label_visibility="collapsed") 
+        
+    input_image = uploaded_file or camera_image
+
+    if input_image:
+        image = Image.open(input_image)
+        st.image(image, caption="Uploaded Seeds", use_column_width=True)
         
         if st.button("Check Quality"):
-            with st.chat_message("assistant"):
-                with st.spinner("Counting seeds..."):
-                    try:
-                        model = genai.GenerativeModel('gemini-1.5-flash')
-                        prompt = "Analyze this image of seeds. Estimate count. Check for breakage/rot. Give a quality rating."
-                        response = model.generate_content([prompt, image])
-                        st.write(response.text)
-                    except Exception as e:
-                        st.error(f"Error: {e}")
+            with st.spinner("Counting seeds..."):
+                try:
+                    model = genai.GenerativeModel('gemini-1.5-flash')
+                    prompt = "Analyze these seeds. Estimate count. Check for breakage/rot. Rate quality."
+                    response = model.generate_content([prompt, image])
+                    st.write(response.text)
+                except Exception as e:
+                    st.error(f"Error: {e}")
 
-
-# --- TOOL 3: WEATHER GUIDE ---
-elif app_mode == "🌤 Weather Guide":
-    st.title("🌤 Weather Guide")
+# =======================================================
+# --- TOOL 4: WEATHER GUIDE (DROPDOWN TOOL) ---
+# =======================================================
+elif app_mode == "☁ Weather Guide":
+    st.header("☁ Weather Guide")
     st.write("Select your conditions to get farming advice.")
 
     col1, col2 = st.columns(2)
