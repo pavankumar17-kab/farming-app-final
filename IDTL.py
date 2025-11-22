@@ -1,144 +1,48 @@
 import streamlit as st
-from datetime import datetime, timedelta
+import google.generativeai as genai
+from PIL import Image
 
-st.set_page_config(page_title="Agri-GPT", page_icon="🌱")
+# 1. CONNECT TO GOOGLE AI
+# This looks for the key you just saved in Secrets
+if "GOOGLE_API_KEY" in st.secrets:
+    api_key = st.secrets["GOOGLE_API_KEY"]
+    genai.configure(api_key=api_key)
+else:
+    st.error("Missing Google API Key. Please add it to Streamlit Secrets.")
 
-# ---------------------------------------------
-# SIMPLE IMAGE-BASED DISEASE CHECKER (RULE-BASED)
-# ---------------------------------------------
-def detect_disease(image):
-    # Convert to small size
-    img = image.resize((50, 50))
-    pixels = list(img.getdata())
+# 2. PAGE SETUP
+st.set_page_config(page_title="Farmer Assistant", page_icon="🌿")
+st.title("🌿 AI Farmer Assistant")
+st.write("Upload a photo of a plant. The AI will identify diseases and suggest medicines.")
 
-    green_count = 0
-    brown_black_count = 0
-    yellow_count = 0
+# 3. UPLOAD IMAGE
+uploaded_file = st.file_uploader("Choose a plant image...", type=["jpg", "jpeg", "png"])
 
-    for p in pixels:
-        r, g, b = p
-        if g > r and g > b:
-            green_count += 1
-        if r < 80 and g < 80 and b < 80:
-            brown_black_count += 1
-        if r > 150 and g > 150 and b < 80:
-            yellow_count += 1
-
-    if brown_black_count > 500:
-        return "Fungal Disease", "Spray Mancozeb or Copper Oxychloride. Avoid over-watering. Improve air flow."
-    if yellow_count > 500:
-        return "Nutrient Deficiency", "Add Nitrogen or Iron fertilizer. Use compost or NPK 19-19-19."
-    if green_count > 1000:
-        return "Healthy", "Plant is healthy. Continue normal watering and sunlight."
-
-    return "Uncertain", "Image unclear. Try uploading a close leaf photo."
-
-# ---------------------------------------------
-# SIMPLE SEED QUALITY CHECKER
-# ---------------------------------------------
-def check_seed_quality(image):
-    img = image.resize((30, 30))
-    pixels = list(img.getdata())
-
-    dark = 0
-    bright = 0
-
-    for p in pixels:
-        r, g, b = p
-        if r < 80 and g < 80 and b < 80:
-            dark += 1
-        if r > 150 and g > 150 and b > 150:
-            bright += 1
-
-    if bright > dark:
-        return "Good Seeds", "These seeds are likely healthy and suitable for sowing."
-    else:
-        return "Bad Seeds", "These seeds may be old or infected. Avoid planting."
-
-# ---------------------------------------------
-# WEATHER PREDICTOR (VERY SIMPLE)
-# ---------------------------------------------
-def predict_weather():
-    tomorrow = datetime.now() + timedelta(days=1)
-    day = tomorrow.day
-
-    if day % 3 == 0:
-        return "Rain Expected Tomorrow ☔", "Avoid spraying fertilizers or pesticides tomorrow."
-    if day % 2 == 0:
-        return "Hot Day Tomorrow 🌞", "Irrigate your plants early morning."
-    return "Cloudy Weather Tomorrow ☁", "Good day for fertilizer application."
-
-# ---------------------------------------------
-# AGRI-GPT AGRICULTURE CHATBOT
-# ---------------------------------------------
-def agri_chatbot(question):
-    question = question.lower()
-
-    if "fertilizer" in question:
-        return "Use NPK 19-19-19 for overall growth. For flowering plants use NPK 0-52-34."
-
-    if "water" in question:
-        return "Water early in the morning. Avoid wetting leaves to prevent fungal diseases."
-
-    if "soil" in question:
-        return "Use well-drained loamy soil mixed with compost for best plant growth."
-
-    if "pest" in question:
-        return "Use neem oil or soap spray every 7 days to control common pests."
-
-    if "disease" in question:
-        return "Upload an image of the leaf to diagnose the disease accurately."
-
-    return "I am Agri-GPT. Ask me anything about farming, seeds, soil, water, fertilizer, or pests."
-
-# ---------------------------------------------
-# STREAMLIT UI
-# ---------------------------------------------
-st.title("🌱 Agri-GPT: AI Agriculture Assistant")
-
-menu = st.radio("Select Option", 
-                ["💬 Agriculture Chatbot", 
-                 "🟢 Plant Disease Detector", 
-                 "🌾 Seed Quality Checker",
-                 "☁ Weather Predictor"])
-
-# ---------------------------------------------
-# CHATBOT
-# ---------------------------------------------
-if menu == "💬 Agriculture Chatbot":
-    st.subheader("Ask anything about agriculture")
-    q = st.text_input("Your Question:")
-    if q:
-        st.write("**Agri-GPT:**", agri_chatbot(q))
-
-# ---------------------------------------------
-# PLANT DISEASE DETECTOR
-# ---------------------------------------------
-elif menu == "🟢 Plant Disease Detector":
-    img = st.camera_input("Take a photo of the plant leaf")
-    if img:
-        from PIL import Image
-        image = Image.open(img)
-        disease, solution = detect_disease(image)
-        st.write(f"### Result: **{disease}**")
-        st.write(f"### Solution: {solution}")
-
-# ---------------------------------------------
-# SEED QUALITY CHECKER
-# ---------------------------------------------
-elif menu == "🌾 Seed Quality Checker":
-    img = st.camera_input("Take a photo of the seeds")
-    if img:
-        from PIL import Image
-        image = Image.open(img)
-        quality, advice = check_seed_quality(image)
-        st.write(f"### Seed Quality: **{quality}**")
-        st.write(f"### Advice: {advice}")
-
-# ---------------------------------------------
-# WEATHER
-# ---------------------------------------------
-elif menu == "☁ Weather Predictor":
-    result, tip = predict_weather()
-    st.write(f"### {result}")
-    st.write(f"### Tip: {tip}")
+if uploaded_file:
+    image = Image.open(uploaded_file)
+    st.image(image, caption="Your Photo", use_column_width=True)
+    
+    # 4. BUTTON TO ANALYZE
+    if st.button("Identify Disease"):
+        with st.spinner("Asking the AI Expert..."):
+            try:
+                # Connect to Gemini Model
+                model = genai.GenerativeModel('gemini-1.5-flash')
+                
+                # The Question we ask the AI
+                my_question = (
+                    "You are an expert farmer. Look at this plant. "
+                    "1. What is the name of this plant? "
+                    "2. Is it healthy or sick? "
+                    "3. If sick, what is the disease name? "
+                    "4. What medicine or fertilizer should I use? "
+                    "Answer in simple English."
+                )
+                
+                # Get the Answer
+                response = model.generate_content([my_question, image])
+                st.success("Analysis Complete!")
+                st.write(response.text)
+                
+            except Exception as e:
+                st.error(f"Error: {e}")
