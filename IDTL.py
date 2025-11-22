@@ -3,7 +3,7 @@ import google.generativeai as genai
 from PIL import Image
 
 # --- 1. CONFIGURATION ---
-st.set_page_config(page_title="Agri-Smart AI", page_icon="🌿", layout="centered")
+st.set_page_config(page_title="Agri-Smart AI", page_icon="app_icon.png.png", layout="centered")
 
 # Connect to Google AI
 if "GOOGLE_API_KEY" in st.secrets:
@@ -100,3 +100,4 @@ elif app_mode == "☁ Weather Predictor":
             st.error("☀ High Heat. Water frequently.")
         else:
             st.success("✅ Weather is good for farming.")
+
