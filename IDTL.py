@@ -3,43 +3,42 @@ import google.generativeai as genai
 from PIL import Image
 
 # --- 1. CONFIGURATION ---
-st.set_page_config(page_title="Agri-Smart AI", page_icon="app_icon.png.png", layout="centered")
+st.set_page_config(page_title="Agri-Smart AI", page_icon="🌿", layout="centered")
+
 # Connect to Google AI
 if "GOOGLE_API_KEY" in st.secrets:
     genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
 else:
     st.error("⚠ Google API Key missing! Please add it to Streamlit Secrets.")
 
-# --- 2. SIDEBAR MENU ---
-st.sidebar.header("🚜 Agri-Dashboard")
-st.sidebar.markdown("---")
-app_mode = st.sidebar.radio("Select Tool:", [
+# --- 2. MAIN MENU (VISIBLE ON FRONT PAGE) ---
+st.header("🚜 Agri-Dashboard")
+app_mode = st.radio("Select Tool:", [
     "🌿 AI Plant Doctor (Chat)", 
     "🌰 Smart Seed Checker", 
     "🌤 Weather Guide"
-])
+], horizontal=True)
+st.markdown("---")
 
-# --- FUNCTION TO GET INPUT ---
-def get_image_input():
-    col_upload, col_camera = st.columns(2)
-    with col_upload:
-        uploaded_file = st.file_uploader("Upload Image", type=["jpg", "jpeg", "png"])
-    with col_camera:
-        # This forces the camera option to be visible
-        camera_image = st.camera_input("Take Photo Directly") 
-        
-    return uploaded_file or camera_image # Returns one or the other
 
 # --- TOOL 1: PLANT DOCTOR (Chatbot Style) ---
 if app_mode == "🌿 AI Plant Doctor (Chat)":
     st.title("🌿 AI Plant Doctor")
     
     with st.chat_message("assistant"):
-        st.write("Hello! I am your AI Expert. Use the buttons below to upload or take a photo, then ask me anything.")
+        st.write("Hello! Upload a photo below and ask me any question about the plant.")
 
-    # Get image input using the new combined function
-    input_image = get_image_input()
-    
+    # Get image input (Upload is LARGE, Camera is small)
+    col1, col2 = st.columns((3, 1)) # 3/4 width for file uploader, 1/4 for camera
+    with col1:
+        # Full width, large button
+        uploaded_file = st.file_uploader("1. Upload Leaf Photo:", type=["jpg", "jpeg", "png"]) 
+    with col2:
+        # Narrow column makes this button small
+        camera_image = st.camera_input("Camera", label_visibility="collapsed") 
+
+    input_image = uploaded_file or camera_image # Logic to use either source
+
     if input_image:
         image = Image.open(input_image)
         st.image(image, caption="Your Photo", use_column_width=True)
@@ -47,11 +46,9 @@ if app_mode == "🌿 AI Plant Doctor (Chat)":
         user_question = st.chat_input("Ask a question about this plant...")
         
         if user_question:
-            # Show User Question
             with st.chat_message("user"):
                 st.write(user_question)
             
-            # Show AI Response
             with st.chat_message("assistant"):
                 with st.spinner("Thinking..."):
                     try:
@@ -61,16 +58,24 @@ if app_mode == "🌿 AI Plant Doctor (Chat)":
                     except Exception as e:
                         st.error(f"Error: {e}")
 
+
 # --- TOOL 2: SEED CHECKER ---
 elif app_mode == "🌰 Smart Seed Checker":
     st.title("🌰 Smart Seed Checker")
-    st.write("Upload or take a photo of seeds to check quality.")
+    
+    # Get image input (Upload is LARGE, Camera is small)
+    col1, col2 = st.columns((3, 1)) # 3/4 width for file uploader, 1/4 for camera
+    with col1:
+        # Full width, large button
+        uploaded_file = st.file_uploader("1. Upload Seed Photo:", type=["jpg", "jpeg", "png"]) 
+    with col2:
+        # Narrow column makes this button small
+        camera_image = st.camera_input("Camera", label_visibility="collapsed") 
 
-    # Get image input using the new combined function
-    input_seed_image = get_image_input()
+    input_image = uploaded_file or camera_image
 
-    if input_seed_image:
-        image = Image.open(input_seed_image)
+    if input_image:
+        image = Image.open(input_image)
         st.image(image, caption="Your Seeds", use_column_width=True)
         
         if st.button("Check Quality"):
@@ -83,6 +88,7 @@ elif app_mode == "🌰 Smart Seed Checker":
                         st.write(response.text)
                     except Exception as e:
                         st.error(f"Error: {e}")
+
 
 # --- TOOL 3: WEATHER GUIDE ---
 elif app_mode == "🌤 Weather Guide":
