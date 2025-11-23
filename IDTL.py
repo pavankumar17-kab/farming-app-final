@@ -67,7 +67,7 @@ elif app_mode == "🟢 Plant Disease Detector":
         if st.button("Identify Disease"):
             with st.spinner("Analyzing..."):
                 try:
-                    model = genai.GenerativeModel('gemini-1.5-flash')
+                    model = genai.GenerativeModel('gemini-2.5-flash')
                     prompt = "Analyze this plant leaf. Name the plant, identify the disease, and suggest a cure."
                     response = model.generate_content([prompt, image])
                     st.write(response.text)
@@ -125,3 +125,4 @@ elif app_mode == "☁ Weather Guide":
         st.info("🌧 *Fungal Risk:* Monitor leaves closely for spots.")
     elif season == "Winter":
         st.success("❄ *Cool & Dry:* Ideal for planting leafy vegetables.")
+
