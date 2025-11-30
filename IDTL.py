@@ -8,7 +8,8 @@ st.set_page_config(page_title="Agri-GPT", page_icon="🌱")
 # ------------------------------------------------------------------
 # 🔑 PASTE YOUR KEY HERE
 # Replace "YOUR_API_KEY" with the long code from Google
-GOOGLE_API_KEY = "YOUR_API_KEY"
+# ✅ CORRECT:
+GOOGLE_API_KEY = "AIzaSyD-5mPq8-Kj9... (your real code)"
 # ------------------------------------------------------------------
 
 # Configure AI
@@ -92,3 +93,4 @@ elif option == "🌾 Seed Quality / ಬೀಜ ಗುಣಮಟ್ಟ":
 elif option == "☁️ Weather / ಹವಾಮಾನ":
     st.header("☁️ Weather Predictor")
     st.write("Coming Soon...")
+
