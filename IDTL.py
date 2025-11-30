@@ -2,11 +2,12 @@ import streamlit as st
 import google.generativeai as genai
 from PIL import Image
 import streamlit.components.v1 as components 
+from streamlit_mic_recorder import speech_to_text # <--- ONLY CHANGE: Added Import
 
 # --- 1. CONFIGURATION ---
 st.set_page_config(page_title="Agri-Smart AI", page_icon="🌿", layout="centered")
 
-# Connect to Google AI
+# Connect to Google AI (KEPT YOUR ORIGINAL SECRETS CODE)
 if "GOOGLE_API_KEY" in st.secrets:
     genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
 else:
@@ -28,6 +29,7 @@ TRANSLATIONS = {
         "ask_button": "Ask Agri-AI",
         "answer_title": "Agri-GPT Answer:",
         "question_placeholder": "e.g., hat amount of water I can use for growing cotton?",
+        "voice_label": "🎤 Tap to Speak:", # Added label
         
         "detector_header": "🟢 Plant Disease Detector",
         "detector_description": "Upload a photo of a sick leaf for diagnosis.",
@@ -67,6 +69,7 @@ TRANSLATIONS = {
         "ask_button": "ಕೃಷಿ-AI ಗೆ ಕೇಳಿ",
         "answer_title": "ಕೃಷಿ-GPT ಉತ್ತರ:",
         "question_placeholder": "ಉದಾ. ಹತ್ತಿ ಬೆಳೆಯಲು ಎಷ್ಟು ನೀರು ಬಳಸಬಹುದು?",
+        "voice_label": "🎤 ಮಾತನಾಡಲು ಕ್ಲಿಕ್ ಮಾಡಿ:", # Added label
 
         "detector_header": "🟢 ಸಸ್ಯ ರೋಗ ಪತ್ತೆ",
         "detector_description": "ರೋಗಗ್ರಸ್ತ ಎಲೆಯ ಫೋಟೋವನ್ನು ಅಪ್ಲೋಡ್ ಮಾಡಿ.",
@@ -176,6 +179,19 @@ if app_mode == T["tool_chat"]:
     st.title(T["chat_title"])
     st.write(T["chat_description"])
     
+    # --- ONLY CHANGE: Added Voice Recorder Here ---
+    st.write(f"**{T['voice_label']}**")
+    voice_input = speech_to_text(
+        language='en',
+        start_prompt="🔴 Record / ರೆಕಾರ್ಡ್",
+        stop_prompt="⬛ Stop / ನಿಲ್ಲಿಸಿ",
+        just_once=True,
+        key='STT'
+    )
+    if voice_input:
+        st.info(f"🗣️ Heard: {voice_input}")
+    # ---------------------------------------------
+    
     # Use columns to place the Mic icon (🎙) to the left of the input box
     col_mic_icon, col_text_input = st.columns((1, 9))
     
@@ -183,14 +199,18 @@ if app_mode == T["tool_chat"]:
         st.markdown("<h3 style='margin-top: 20px; text-align: center;'>🎙</h3>", unsafe_allow_html=True)
     
     with col_text_input:
-        user_question = st.text_input(T["your_question"], 
+        text_input_val = st.text_input(T["your_question"], 
                                       placeholder=T["question_placeholder"],
                                       label_visibility="collapsed")
+    
+    # Logic: Use voice input if available, otherwise use text input
+    user_question = voice_input if voice_input else text_input_val
     
     if st.button(T["ask_button"]):
         if user_question:
             with st.spinner("Thinking..."):
                 try:
+                    # KEPT YOUR ORIGINAL MODEL NAME
                     model = genai.GenerativeModel('gemini-2.5-flash') 
                     
                     if lang_choice == "Kannada (ಕನ್ನಡ)":
@@ -231,6 +251,7 @@ elif app_mode == T["tool_disease"]:
         if st.button(T["identify_button"]):
             with st.spinner("Analyzing..."):
                 try:
+                    # KEPT YOUR ORIGINAL MODEL NAME
                     model = genai.GenerativeModel('gemini-2.5-flash') 
                     
                     if lang_choice == "Kannada (ಕನ್ನಡ)":
@@ -269,6 +290,7 @@ elif app_mode == T["tool_seed"]:
         if st.button(T["check_button"]):
             with st.spinner("Counting seeds..."):
                 try:
+                    # KEPT YOUR ORIGINAL MODEL NAME
                     model = genai.GenerativeModel('gemini-2.5-flash')
                     
                     if lang_choice == "Kannada (ಕನ್ನಡ)":
@@ -333,4 +355,4 @@ elif app_mode == T["tool_weather"]:
         if lang_choice == "Kannada (ಕನ್ನಡ)":
             st.success("❄ ತಂಪು ಮತ್ತು ಶುಷ್ಕ: ಸೊಪ್ಪು ಬೆಳೆಯಲು ಉತ್ತಮ ಸಮಯ. (Ideal for planting leafy vegetables).")
         else:
-            st.success("❄ Cool & Dry: Ideal for planting leafy vegetables.")
+            st.success("❄ Cool & Dry: Ideal for planting leafy vegetables.")
