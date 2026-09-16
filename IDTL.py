@@ -246,7 +246,7 @@ elif app_mode == T["tool_disease"]:
 
     if input_image:
         image = Image.open(input_image)
-        st.image(image, caption=T["uploaded_leaf_caption"], use_column_width=True)
+        st.image(image, caption=T["uploaded_leaf_caption"], use_container_width=True)
         
         if st.button(T["identify_button"]):
             with st.spinner("Analyzing..."):
@@ -285,7 +285,7 @@ elif app_mode == T["tool_seed"]:
 
     if input_image:
         image = Image.open(input_image)
-        st.image(image, caption=T["uploaded_seed_caption"], use_column_width=True)
+        st.image(image, caption=T["uploaded_seed_caption"], use_container_width=True)
         
         if st.button(T["check_button"]):
             with st.spinner("Counting seeds..."):
