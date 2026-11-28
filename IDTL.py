@@ -13,8 +13,8 @@ st.set_page_config(page_title="Agri-Smart AI", page_icon="🌱", layout="wide")
 st.markdown(
     """
     <style>
-    :root { --forest:#143d2b; --leaf:#2e704d; --lime:#d9ec8b; --ink:#19291f; --muted:#748176; --line:#e6e9df; --paper:#f6f7f2; }
-    .stApp { background:var(--paper); color:var(--ink); }
+    :root { --forest:#143d2b; --leaf:#2e704d; --lime:#d9ec8b; --ink:#19291f; --muted:#748176; --line:#e6e9df; --paper:#f2f2e8; }
+    .stApp { background:radial-gradient(ellipse at 88% 4%,rgba(164,194,125,.19),transparent 34%),radial-gradient(ellipse at 4% 72%,rgba(197,181,127,.13),transparent 39%),linear-gradient(135deg,#f3f3e9 0%,#edf1e3 52%,#f4f1e6 100%); color:var(--ink); }
     [data-testid="stHeader"] { background:transparent; }
     [data-testid="stToolbar"], #MainMenu, footer { visibility:hidden; }
     [data-testid="stAppViewContainer"] > .main .block-container { max-width:1120px; padding:1.2rem 2.2rem 3rem; }
