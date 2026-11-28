@@ -38,6 +38,7 @@ st.markdown(
     .section-kicker { color:#819083; text-transform:uppercase; letter-spacing:.12em; font-size:.72rem; font-weight:750; margin:.4rem 0 .2rem; }
     div[role="radiogroup"] { gap:.55rem !important; flex-wrap:wrap; }
     div[role="radiogroup"] > label { padding:.68rem .95rem; border:1px solid #cbd8cb !important; border-radius:13px; background:#e8efe7 !important; color:#294635 !important; box-shadow:0 2px 8px #183b2508; transition:all .16s ease; }
+    div[role="radiogroup"] > label, div[role="radiogroup"] > label * { color:#20372a !important; }
     div[role="radiogroup"] > label:hover { border-color:#789b7e !important; background:#dce9dc !important; color:var(--forest) !important; }
     div[role="radiogroup"] > label:has(input[type="radio"]:checked) { border-color:#789748 !important; background:var(--lime) !important; color:#183b27 !important; box-shadow:0 5px 15px #143d2b20; }
     div[role="radiogroup"] > label:has(input[type="radio"]:checked) p,
@@ -56,6 +57,8 @@ st.markdown(
     [data-testid="stAlert"] { border-radius:14px; }
     [data-testid="stImage"] img { border-radius:16px; }
     [data-testid="stCaptionContainer"] { color:var(--muted); }
+    [data-testid="stCaptionContainer"], [data-testid="stCaptionContainer"] p { color:#26392d !important; }
+    [data-testid="stTextInput"] label, [data-testid="stTextInput"] label p { color:#20372a !important; }
     hr { border-color:var(--line); }
     @media(max-width:700px) { [data-testid="stAppViewContainer"] > .main .block-container { padding:.7rem 1rem 2rem; } .hero { padding:1.6rem; min-height:175px; } .hero-art { width:100px; opacity:.8; } .hero h1 { font-size:2rem !important; } }
     </style>
