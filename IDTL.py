@@ -43,7 +43,6 @@ st.markdown(
     div[role="radiogroup"] > label:has(input[type="radio"]:checked) p,
     div[role="radiogroup"] > label:has(input[type="radio"]:checked) span,
     div[role="radiogroup"] > label:has(input[type="radio"]:checked) div { color:#183b27 !important; }
-    div[role="radiogroup"] > label > div:first-child { display:none; }
     [data-testid="stRadio"] > label { display:none; }
     .stButton>button { border-radius:12px; font-weight:700; min-height:2.75rem; border-color:#dce4dc; }
     .stButton>button[kind="primary"] { background:var(--forest); border-color:var(--forest); }
