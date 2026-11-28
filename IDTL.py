@@ -13,23 +13,49 @@ st.set_page_config(page_title="Agri-Smart AI", page_icon="🌱", layout="wide")
 st.markdown(
     """
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap');
-    :root { --green: #176b45; --deep: #103f2d; --mint: #eaf5ee; --ink: #172a21; }
-    .stApp { background: linear-gradient(180deg,#f7fbf7 0%,#f4f7f2 100%); color:var(--ink); }
+    :root { --forest:#143d2b; --leaf:#2e704d; --lime:#d9ec8b; --ink:#19291f; --muted:#748176; --line:#e6e9df; --paper:#f6f7f2; }
+    .stApp { background:var(--paper); color:var(--ink); }
     [data-testid="stHeader"] { background:transparent; }
-    [data-testid="stSidebar"] { background:#103f2d; }
-    [data-testid="stSidebar"] * { color:#f5fff8 !important; }
-    html, body, [class*="css"] { font-family:'DM Sans',sans-serif; }
-    h1,h2,h3 { font-family:'Manrope',sans-serif; color:var(--deep); letter-spacing:-.035em; }
-    .hero { padding:2rem 2.2rem; border-radius:24px; color:white; background:linear-gradient(115deg,#103f2d,#1d7650 65%,#5b9b58); box-shadow:0 18px 50px #174a3022; margin-bottom:1.2rem; }
-    .hero h1 { color:white; margin:0 0 .25rem; font-size:2.3rem; }
-    .hero p { color:#e5f5e9; font-size:1.04rem; margin:.25rem 0 0; }
-    .tag { display:inline-block; padding:.35rem .7rem; border:1px solid #ffffff55; border-radius:20px; font-size:.8rem; margin-bottom:.75rem; }
-    .stButton>button { border-radius:12px; font-weight:700; min-height:2.8rem; }
-    .stButton>button[kind="primary"] { background:var(--green); border-color:var(--green); }
-    [data-testid="stChatMessage"] { border:1px solid #e3ece4; border-radius:18px; background:#fff; }
-    [data-testid="stFileUploader"] { border-radius:16px; }
-    .hint { color:#53675b; font-size:.92rem; }
+    [data-testid="stToolbar"], #MainMenu, footer { visibility:hidden; }
+    [data-testid="stAppViewContainer"] > .main .block-container { max-width:1120px; padding:1.2rem 2.2rem 3rem; }
+    html, body, [class*="css"] { font-family:Inter,ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif; }
+    h1,h2,h3 { color:var(--forest); letter-spacing:-.04em; }
+    h1 { font-size:2rem !important; font-weight:750 !important; }
+    h2 { font-size:1.45rem !important; font-weight:720 !important; }
+    h3 { font-size:1.12rem !important; font-weight:700 !important; }
+    [data-testid="stVerticalBlock"] { gap:.8rem; }
+    .brandbar { display:flex; justify-content:space-between; align-items:center; padding:.35rem 0 1.05rem; }
+    .brand { display:flex; gap:.65rem; align-items:center; font-weight:750; letter-spacing:-.03em; color:var(--forest); font-size:1.08rem; }
+    .brandmark { display:grid; place-items:center; width:38px; height:38px; border-radius:13px; color:#eff8c8; background:var(--forest); font-size:1.25rem; }
+    .brandmeta { color:var(--muted); font-size:.79rem; letter-spacing:.02em; }
+    .hero { position:relative; overflow:hidden; display:flex; min-height:208px; align-items:center; justify-content:space-between; padding:2.15rem 2.4rem; border-radius:25px; color:white; background:linear-gradient(110deg,#143d2b 0%,#1d5339 72%,#2b6846 100%); box-shadow:0 14px 35px #173d2a1a; margin:.15rem 0 1.15rem; }
+    .hero:after { content:''; position:absolute; width:300px; height:300px; right:-72px; top:-125px; border:1px solid #ffffff21; border-radius:50%; box-shadow:0 0 0 36px #ffffff0c,0 0 0 72px #ffffff09; }
+    .hero-copy { position:relative; z-index:1; max-width:660px; }
+    .eyebrow { color:var(--lime); font-size:.72rem; letter-spacing:.16em; font-weight:750; text-transform:uppercase; margin-bottom:.7rem; }
+    .hero h1 { color:#fff; margin:0; font-size:2.5rem !important; line-height:1.1; }
+    .hero p { color:#d7e5d8; font-size:1rem; margin:.65rem 0 0; max-width:520px; line-height:1.55; }
+    .hero-art { position:relative; z-index:1; width:190px; height:145px; flex:none; margin-left:1.2rem; }
+    .section-kicker { color:#819083; text-transform:uppercase; letter-spacing:.12em; font-size:.72rem; font-weight:750; margin:.4rem 0 .2rem; }
+    div[role="radiogroup"] { gap:.55rem !important; flex-wrap:wrap; }
+    div[role="radiogroup"] > label { padding:.68rem .95rem; border:1px solid var(--line); border-radius:13px; background:#fff; color:#33453a; box-shadow:0 2px 8px #183b2508; transition:all .16s ease; }
+    div[role="radiogroup"] > label:hover { border-color:#9bb8a0; color:var(--forest); }
+    div[role="radiogroup"] > label:has(input:checked) { border-color:var(--forest); background:var(--forest); color:#fff; box-shadow:0 5px 15px #143d2b22; }
+    div[role="radiogroup"] > label > div:first-child { display:none; }
+    [data-testid="stRadio"] > label { display:none; }
+    .stButton>button { border-radius:12px; font-weight:700; min-height:2.75rem; border-color:#dce4dc; }
+    .stButton>button[kind="primary"] { background:var(--forest); border-color:var(--forest); }
+    .stButton>button[kind="primary"]:hover { background:#24583c; border-color:#24583c; }
+    [data-testid="stForm"] { padding:1rem 1.1rem .75rem; border:1px solid var(--line); border-radius:18px; background:#fff; box-shadow:0 6px 20px #173d2a08; }
+    [data-testid="stTextInput"] input { border:1px solid #dfe5dc; border-radius:12px; background:#fff; min-height:3rem; }
+    [data-testid="stTextInput"] input:focus { border-color:#6f9b79; box-shadow:0 0 0 3px #2e704d17; }
+    [data-testid="stFileUploader"] { border:1px dashed #c9d6c9; border-radius:16px; background:#fff; padding:.5rem; }
+    [data-testid="stCameraInput"] button { border-radius:12px; }
+    [data-testid="stCameraInput"] { border-radius:16px; }
+    [data-testid="stAlert"] { border-radius:14px; }
+    [data-testid="stImage"] img { border-radius:16px; }
+    [data-testid="stCaptionContainer"] { color:var(--muted); }
+    hr { border-color:var(--line); }
+    @media(max-width:700px) { [data-testid="stAppViewContainer"] > .main .block-container { padding:.7rem 1rem 2rem; } .hero { padding:1.6rem; min-height:175px; } .hero-art { width:100px; opacity:.8; } .hero h1 { font-size:2rem !important; } }
     </style>
     """,
     unsafe_allow_html=True,
@@ -37,6 +63,7 @@ st.markdown(
 
 TRANSLATIONS = {
     "English": {
+        "hero_title": "Grow with confidence.",
         "welcome": "Your smart companion for healthier crops and better decisions.",
         "tag": "FARMING, MADE SMARTER",
         "language": "Language",
@@ -72,6 +99,7 @@ TRANSLATIONS = {
         "error_key": "Add GOOGLE_API_KEY in your Streamlit secrets to enable AI features.",
     },
     "ಕನ್ನಡ": {
+        "hero_title": "ಆತ್ಮವಿಶ್ವಾಸದಿಂದ ಬೆಳೆಸಿ.",
         "welcome": "ಆರೋಗ್ಯಕರ ಬೆಳೆ ಮತ್ತು ಉತ್ತಮ ನಿರ್ಧಾರಗಳಿಗೆ ನಿಮ್ಮ ಸ್ಮಾರ್ಟ್ ಸಹಾಯಕ.",
         "tag": "ಸ್ಮಾರ್ಟ್ ಕೃಷಿ ಸಹಾಯಕ",
         "language": "ಭಾಷೆ",
@@ -148,15 +176,19 @@ def speak_button(text, lang_choice, key):
     )
 
 
-lang_choice = st.sidebar.selectbox("Language / ಭಾಷೆ", ["English", "ಕನ್ನಡ"])
+header_left, header_right = st.columns([3, 1])
+with header_left:
+    st.markdown('<div class="brandbar"><div class="brand"><span class="brandmark">🌱</span><span>Agri-Smart AI<br><small class="brandmeta">Your farm, one step smarter</small></span></div></div>', unsafe_allow_html=True)
+with header_right:
+    lang_choice = st.selectbox("Language / ಭಾಷೆ", ["English", "ಕನ್ನಡ"], label_visibility="collapsed")
 T = TRANSLATIONS[lang_choice]
 st.markdown(
-    f'<div class="hero"><span class="tag">{T["tag"]}</span><h1>🌱 Agri-Smart AI</h1><p>{T["welcome"]}</p></div>',
+    f'''<section class="hero"><div class="hero-copy"><div class="eyebrow">{T["tag"]}</div><h1>{T["hero_title"]}</h1><p>{T["welcome"]}</p></div><svg class="hero-art" viewBox="0 0 220 170" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="169" cy="37" r="21" fill="#D9EC8B"/><path d="M4 119C39 88 62 93 92 111C118 127 143 125 216 82V170H4V119Z" fill="#75A66B"/><path d="M4 137C45 112 75 111 111 135C143 155 170 143 216 116V170H4V137Z" fill="#A9C979"/><path d="M24 170C53 148 86 143 121 170M75 170C101 150 131 151 157 170M132 170C151 159 174 158 195 170" stroke="#E5F1BF" stroke-width="3" stroke-linecap="round"/><path d="M114 110C114 91 125 76 144 69M115 108C102 91 91 87 79 89M114 109C123 92 138 85 156 87" stroke="#E7F1C2" stroke-width="5" stroke-linecap="round"/><path d="M142 71C141 57 152 49 167 51C166 65 158 72 142 71ZM81 89C69 76 73 62 86 55C98 66 97 79 81 89ZM155 87C158 73 171 67 184 72C181 86 170 91 155 87Z" fill="#D9EC8B"/></svg></section>''',
     unsafe_allow_html=True,
 )
-
+st.markdown(f'<div class="section-kicker">{T["nav"]}</div>', unsafe_allow_html=True)
 tool = st.radio(T["nav"], [T["chat"], T["disease"], T["seed"], T["weather"]], horizontal=True, label_visibility="collapsed")
-st.divider()
+st.markdown("<div style='height:.45rem'></div>", unsafe_allow_html=True)
 
 if tool == T["chat"]:
     st.header(T["chat_title"])
