@@ -37,9 +37,12 @@ st.markdown(
     .hero-art { position:relative; z-index:1; width:190px; height:145px; flex:none; margin-left:1.2rem; }
     .section-kicker { color:#819083; text-transform:uppercase; letter-spacing:.12em; font-size:.72rem; font-weight:750; margin:.4rem 0 .2rem; }
     div[role="radiogroup"] { gap:.55rem !important; flex-wrap:wrap; }
-    div[role="radiogroup"] > label { padding:.68rem .95rem; border:1px solid var(--line); border-radius:13px; background:#fff; color:#33453a; box-shadow:0 2px 8px #183b2508; transition:all .16s ease; }
-    div[role="radiogroup"] > label:hover { border-color:#9bb8a0; color:var(--forest); }
-    div[role="radiogroup"] > label:has(input:checked) { border-color:var(--forest); background:var(--forest); color:#fff; box-shadow:0 5px 15px #143d2b22; }
+    div[role="radiogroup"] > label { padding:.68rem .95rem; border:1px solid #cbd8cb !important; border-radius:13px; background:#e8efe7 !important; color:#294635 !important; box-shadow:0 2px 8px #183b2508; transition:all .16s ease; }
+    div[role="radiogroup"] > label:hover { border-color:#789b7e !important; background:#dce9dc !important; color:var(--forest) !important; }
+    div[role="radiogroup"] > label:has(input[type="radio"]:checked) { border-color:#789748 !important; background:var(--lime) !important; color:#183b27 !important; box-shadow:0 5px 15px #143d2b20; }
+    div[role="radiogroup"] > label:has(input[type="radio"]:checked) p,
+    div[role="radiogroup"] > label:has(input[type="radio"]:checked) span,
+    div[role="radiogroup"] > label:has(input[type="radio"]:checked) div { color:#183b27 !important; }
     div[role="radiogroup"] > label > div:first-child { display:none; }
     [data-testid="stRadio"] > label { display:none; }
     .stButton>button { border-radius:12px; font-weight:700; min-height:2.75rem; border-color:#dce4dc; }
