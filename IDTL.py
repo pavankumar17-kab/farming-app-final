@@ -28,12 +28,12 @@ st.markdown(
     .brand { display:flex; gap:.65rem; align-items:center; font-weight:750; letter-spacing:-.03em; color:var(--forest); font-size:1.08rem; }
     .brandmark { display:grid; place-items:center; width:38px; height:38px; border-radius:13px; color:#eff8c8; background:var(--forest); font-size:1.25rem; }
     .brandmeta { color:var(--muted); font-size:.79rem; letter-spacing:.02em; }
-    .hero { position:relative; overflow:hidden; display:flex; min-height:208px; align-items:center; justify-content:space-between; padding:2.15rem 2.4rem; border-radius:25px; color:white; background:linear-gradient(110deg,#143d2b 0%,#1d5339 72%,#2b6846 100%); box-shadow:0 14px 35px #173d2a1a; margin:.15rem 0 1.15rem; }
-    .hero:after { content:''; position:absolute; width:300px; height:300px; right:-72px; top:-125px; border:1px solid #ffffff21; border-radius:50%; box-shadow:0 0 0 36px #ffffff0c,0 0 0 72px #ffffff09; }
+    .hero { position:relative; overflow:hidden; display:flex; min-height:208px; align-items:center; justify-content:space-between; padding:2.15rem 2.4rem; border:1px solid #d6e2ce; border-radius:25px; color:var(--forest); background:linear-gradient(110deg,#e5eed6 0%,#edf2df 72%,#e2edcf 100%); box-shadow:0 14px 35px #173d2a0b; margin:.15rem 0 1.15rem; }
+    .hero:after { content:''; position:absolute; width:300px; height:300px; right:-72px; top:-125px; border:1px solid #486c3b28; border-radius:50%; box-shadow:0 0 0 36px #486c3b0c,0 0 0 72px #486c3b08; }
     .hero-copy { position:relative; z-index:1; max-width:660px; }
-    .eyebrow { color:var(--lime); font-size:.72rem; letter-spacing:.16em; font-weight:750; text-transform:uppercase; margin-bottom:.7rem; }
-    .hero h1 { color:#fff; margin:0; font-size:2.5rem !important; line-height:1.1; }
-    .hero p { color:#d7e5d8; font-size:1rem; margin:.65rem 0 0; max-width:520px; line-height:1.55; }
+    .eyebrow { color:#355b34; font-size:.72rem; letter-spacing:.16em; font-weight:750; text-transform:uppercase; margin-bottom:.7rem; }
+    .hero h1 { color:var(--forest); margin:0; font-size:2.5rem !important; line-height:1.1; }
+    .hero p { color:#344b3a; font-size:1rem; margin:.65rem 0 0; max-width:520px; line-height:1.55; }
     .hero-art { position:relative; z-index:1; width:190px; height:145px; flex:none; margin-left:1.2rem; }
     .section-kicker { color:#819083; text-transform:uppercase; letter-spacing:.12em; font-size:.72rem; font-weight:750; margin:.4rem 0 .2rem; }
     div[role="radiogroup"] { gap:.55rem !important; flex-wrap:wrap; }
@@ -45,8 +45,8 @@ st.markdown(
     div[role="radiogroup"] > label:has(input[type="radio"]:checked) div { color:#183b27 !important; }
     [data-testid="stRadio"] > label { display:none; }
     .stButton>button { border-radius:12px; font-weight:700; min-height:2.75rem; border-color:#dce4dc; }
-    .stButton>button[kind="primary"] { background:var(--forest); border-color:var(--forest); }
-    .stButton>button[kind="primary"]:hover { background:#24583c; border-color:#24583c; }
+    .stButton>button[kind="primary"] { background:var(--lime); border-color:#a9c66d; color:#183b27 !important; }
+    .stButton>button[kind="primary"]:hover { background:#cce27b; border-color:#91ad59; color:#183b27 !important; }
     [data-testid="stForm"] { padding:1rem 1.1rem .75rem; border:1px solid var(--line); border-radius:18px; background:#fff; box-shadow:0 6px 20px #173d2a08; }
     [data-testid="stTextInput"] input { border:1px solid #dfe5dc; border-radius:12px; background:#fff; min-height:3rem; }
     [data-testid="stTextInput"] input:focus { border-color:#6f9b79; box-shadow:0 0 0 3px #2e704d17; }
@@ -158,7 +158,7 @@ def speak_button(text, lang_choice, key):
     safe_lang = json.dumps(lang_code)
     components.html(
         f"""<!doctype html><meta charset="utf-8">
-        <button id="speak-{key}" style="background:#176b45;color:white;border:0;border-radius:10px;padding:10px 16px;font:600 15px sans-serif;cursor:pointer">🔊 {"ಕೇಳಿ" if lang_choice == "ಕನ್ನಡ" else "Read aloud"}</button>
+        <button id="speak-{key}" style="background:#e8efe7;color:#183b27;border:1px solid #cbd8cb;border-radius:10px;padding:10px 16px;font:600 15px sans-serif;cursor:pointer">🔊 {"ಕೇಳಿ" if lang_choice == "ಕನ್ನಡ" else "Read aloud"}</button>
         <script>
         (() => {{
           const button = document.getElementById("speak-{key}");
